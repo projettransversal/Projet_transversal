@@ -1,0 +1,90 @@
+/*************** Fonction affichage du spectre ***************/
+
+void Spectre_affichage(double spectre[], double max){
+	int hauteur = 30; // Hauteur de la fenetre voulu pour l'affichage
+	int m = max; 
+	while(hauteur >= 0){
+		while(m<hauteur){
+			printf("\n");
+			hauteur--;
+		}
+		for(int i=0; i<BITRATE/2; i++){
+			if(spectre[i] >= m){
+				printf("*");
+				spectre[i]=m-1;
+			}
+			else{
+				printf(" ");
+			} 
+		}
+		printf("\n");
+		hauteur--;
+		m--;
+	}
+}
+
+int affichage_fft(){
+	sf_count_t readcount;
+	double data[BUFFER_LEN];
+	double complex datac[BUFFER_LEN];
+	double spectre[BITRATE];
+	int maximun, min;
+
+	
+
+	twiddle(TW, BUFFER_LEN);
+	infile = sf_open("riders-on-the-storm-snoop-dogg-ft-the-doors.wav",SFM_READ, &sfinfo);
+	if(infile==NULL){
+		fprintf(stderr, "Not available to open input file \n");
+		exit(1);
+	}
+
+	double samplerate = sfinfo.samplerate;
+	double channels = sfinfo.channels;
+
+	while((readcount=sfx_mix_mono_read_double(infile,data,BUFFER_LEN)) >0){
+		for(int i=0; i<BUFFER_LEN; i++){
+			datac[i] = conversioncomplexe(data[i]);
+		}
+	fftiterTW(datac,BUFFER_LEN,LOG2);
+
+		int echantillon = 0; 
+		double moyenne = 0;
+		int place_spectre = 0;
+		for(int i=0; i<BUFFER_LEN;i++){
+			moyenne = moyenne + module_complexe(datac[i]);
+			echantillon++;
+
+			if(echantillon==BUFFER_LEN/BITRATE){
+				spectre[place_spectre] = 20*log10(moyenne/echantillon);
+
+				echantillon = 0;
+				place_spectre++;	
+				moyenne=0;
+			}
+			if(place_spectre==BITRATE){
+				min=spectre[0];
+				for(int j=0; j<BITRATE;j++){
+					if(spectre[j]<min){
+
+						min = spectre[j];
+					}
+				}
+			}
+		}
+		double max =spectre[0];
+
+		for(int j=0; j<BITRATE;j++){
+			spectre[j]=spectre[j]-min;
+			if(max<spectre[j]){
+				max=spectre[j];
+				maximun = j;
+			}
+		}	
+		system("clear");
+		Spectre_affichage(spectre,max);
+		printf("%f\n",(maximun*samplerate)/128);
+		delais(80);
+	}
+	sf_close(infile);
+	return EXIT_SUCCESS;
