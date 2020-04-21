@@ -20,4 +20,4 @@ Et enfin le fichie fftread.c qui regroupe l'ensemble des éléments.
 Voici une photo du rendue final sur linux : 
 <br>
 </br>
-![Image description](https://github.com/projettransversal/Projet_transversal/blob/master/affichage_fft)
+![Image description](https://github.com/projettransversal/Projet_transversal/blob/master/affichage_fft.png)
