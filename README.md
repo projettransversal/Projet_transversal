@@ -1,8 +1,13 @@
 # Projet_transversal
-
 <br>
-Au cours de cette année de 1er année de cycle ingénieur, nous avons travaillé sur un projet de groupe. Celui-ci a pour but de réaliser un affichage, led d'un son qui serait passé a la machine. Pour ce faire, nous avons commencé par développer la partie Hardware du système en assemblant un convertisseur analogique numérique ou CAN.
+Bienvenue sur le GitHub de notre projet transversal. Ce Github a pour but de retranscrire l'ensemble des codes que nous avons effectuer ensemble pour le projet. 
 </br>
 <br>
-La deuxième partie d'un projet était la partie Software dont l'intérêt était la réalisation d'un programme permettant de faire l'affichage graphique sur un micro contrôleur.La deuxième partie d'un projet était la partie Software dont l'intérêt était la réalisation d'un programme permettant de faire l'affichage graphique sur un micro contrôleur.
+Ainsi comme vous pouvez le voir plusieur fichier sont disponibles. A l'exception d'un fichier tous les fichiers sont des bouts de code correspondant a une fonction particuliere de notre projet. Le fichier restant est le code final, celui qui regroupe l'ensemble des sous fonctions et qui nous permet d'avoir le rendue graphique.
+</br>
+Ainsi nous avons mit a votre disposition des fonctions tels que 
+- time_fft --> Donnant le temps d'une fft 
+- affichage_fft --> permettant l'affichage de celle-ci 
+<br>
+Et enfin le fichie fftread.c qui regroupe l'ensemble des éléments.
 </br>
