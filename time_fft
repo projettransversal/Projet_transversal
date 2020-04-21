@@ -1,0 +1,52 @@
+/*************** Fonction time de la fft ***************/
+
+int time_fft(){
+	sf_count_t readcount;
+	clock_t start, stop;
+	double data[BUFFER_LEN];
+	double tempsDFT, tempsFFTiterTW, tempsFFTrec;
+	double complex resultDFT[BUFFER_LEN];
+	double complex datac[BUFFER_LEN];
+	double complex spectre[BUFFER_LEN];
+
+	infile = sf_open("lapur.wav",SFM_READ, &sfinfo);
+	if(infile == NULL){
+		printf("Not available to open input file \n");
+		sf_perror(NULL);
+		return 1; 
+	}
+
+	while((readcount=sfx_mix_mono_read_double(infile,data,BUFFER_LEN))>0){
+		for(int i=0; i<BUFFER_LEN; i++){
+			datac[i] = conversioncomplexe(data[i]);
+		}
+		start=clock();
+		twiddle(TW,BUFFER_LEN);
+		fftiterTW(datac,BUFFER_LEN,LOG2);
+		stop = clock();
+
+		tempsFFTiterTW = (double)(stop-start)/(double)(CLOCKS_PER_SEC);
+
+		start=clock();
+		fftrec(datac,spectre,BUFFER_LEN,LOG2);
+		stop = clock();
+
+		tempsFFTrec = (double)(stop-start)/(double)(CLOCKS_PER_SEC);
+
+		start=clock();
+		DFT(datac,resultDFT,BUFFER_LEN);
+		stop = clock();
+
+		tempsDFT = (double)(stop-start)/(double)(CLOCKS_PER_SEC);
+	}
+	sf_close(infile);
+
+
+	printf("Temps pour une FFT itérative avec Twiddle Factor : %lf ms\n",tempsFFTiterTW*1000);
+	printf("Temps pour une FFT récursive : %lf ms\n",tempsFFTrec*1000);
+	printf("Temps pour une DFT : %lf ms\n",tempsDFT*1000);
+	return 0;
+
+
+}
+/*************** Fin Fonction time de la fft ***********/
