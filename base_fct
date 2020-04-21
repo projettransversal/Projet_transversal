@@ -1,0 +1,61 @@
+SNDFILE *infile, *outfile;
+SF_INFO sfinfo;
+
+
+// fonction sfx_mix_mono_read_double
+sf_count_t sfx_mix_mono_read_double (SNDFILE * file, double * data, sf_count_t datalen){
+  SF_INFO info;
+  static double multi_data [2048] ;
+  int k, ch, frames_read ;
+  sf_count_t dataout = 0 ;
+  sf_command (file, SFC_GET_CURRENT_SF_INFO, &info, sizeof (info)) ;
+  if (info.channels == 1)
+    	return sf_read_double (file, data, datalen) ;
+  while (dataout < datalen){   
+   		int this_read ;
+		this_read = MIN (ARRAY_LEN (multi_data) / info.channels, datalen) ;
+		frames_read = sf_readf_double (file, multi_data, this_read) ;
+		if (frames_read == 0)
+				break ;
+		for (k = 0 ; k < frames_read ; k++){       
+				double mix = 0.0 ;
+				for (ch = 0 ; ch < info.channels ; ch++)
+						mix += multi_data [k * info.channels + ch] ;
+		        data [dataout + k] = mix / info.channels ;
+        } ;
+    dataout += this_read ;
+    } ;
+  	return dataout ;
+}
+
+// fonction bitrev 
+int bitrev(int inp, int numbits){
+  int rev=0;
+  for (int i=0; i<numbits;i++){
+      rev=(rev << 1) | (inp & 1);
+      inp >>=1;
+    }
+  return rev;
+}
+
+
+/*************** fonction utiles ***************/
+
+/* Rôle : Création d'un nombre complexe */
+complex conversioncomplexe(double valeur){
+	return valeur + I*0.0;
+}
+
+/* Rôle : Calcul du module d'un nombre complexe */
+double module_complexe(complex c){
+	return sqrt(creal(c)*creal(c)+cimag(c)*cimag(c));
+}
+
+/* Rôle : Effectue un delai avec le temps t passé en parametre */
+void delais(int t){
+	clock_t time =clock();
+	while( (clock()-time) <= (t*CLOCKS_PER_SEC/1000));
+}
+
+
+/*************** FIN fonction utiles ***************/
