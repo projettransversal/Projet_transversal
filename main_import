@@ -1,0 +1,31 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <sndfile.h>
+#include <math.h>
+#include <complex.h>
+#include <time.h>
+#include <unistd.h>
+
+#define LOG2 10
+
+#define SWAP(a,b) ctmp=(a); (a)=(b); (b)=ctmp
+#define ARRAY_LEN(x) ((int) (sizeof (x) / sizeof (x [0])))
+#define MAX(x,y) ((x) > (y) ? (x) : (y))
+#define MIN(x,y) ((x) < (y) ? (x) : (y))
+
+// Taille de lecture, nombre de points
+#define BUFFER_LEN 1024
+// Nombre de bits qui sont traités par unité de temps qui est de 128kbits en moyenne
+#define BITRATE 512
+
+/*
+Commande de compilation : gcc -std=c99 fftread.c -lm -lsndfile -o fftread.o
+*/
+
+
+
+int main(int argc, char*argv[]){
+	printf("%d",time_fft());
+	//printf("%d",affichage_fft());
+	
+}
