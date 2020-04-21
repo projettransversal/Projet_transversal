@@ -1,0 +1,80 @@
+/************* Programmation des FFT et DFT  *************/
+
+/* Rôle : Calcul des Twiddles Factors */
+complex TW[BUFFER_LEN];
+void twiddle(complex *TW, unsigned int size){
+	complex phi = cexp(-2*I*3.14150/size);
+
+	TW[0]=1;
+	for(int i=1; i<size; i++)
+		TW[i]=TW[i-1]*phi;
+}
+
+/* Rôle : Calcul de la FFT itérative */
+void fftiterTW(complex *data, unsigned int size, int log2n){
+	int j, N2, Bpair, Bimpair, Bp=1, N=size;
+	complex impair, pair, ctmp;
+
+	for(int k=0; k<log2n;k++){
+		N2=N/2;
+		Bpair=0;
+		for(int b=0; b<Bp;b++){
+			Bimpair=Bpair+N2;
+			for(int n=0;n<N2;n++){
+				impair = data[Bpair+n] + data[Bimpair+n];
+				pair = (data[Bpair+n] - data[Bimpair+n])*TW[n*size/N];
+				data[Bpair+n] = pair;
+				data[Bimpair+n] = impair;
+			}
+			Bpair = Bpair+N;
+		}
+		Bp=Bp*2;
+		N=N2;
+	}
+	for(int i=0;i<size;i++){
+		j=bitrev(i,log2n);
+		if(j>i){
+			SWAP(data[j],data[i]);
+		}
+	}
+	for(int i=size-1;i>0;i--){
+		data[i]=data[i-1];
+	}
+	data[0]=ctmp;
+	return;
+}
+
+/* Rôle : Calcul de la FFT récursive */
+void fftrec(complex *data, complex *result, unsigned int size, int log2n){
+	complex ypair[size], yimpair[size], Fimpair[size], Fpair[size];
+	int n,N2;
+	if(size>1){
+		N2=size/2;
+		for(n=0;n<N2;n++){
+			ypair[n] = data[n]+data[n+N2];
+			yimpair[n] = (data[n]-data[n+N2])*cexp(-2*I*3.14150*n/size);
+		}
+		fftrec(ypair,Fpair,N2,log2n);
+		fftrec(yimpair,Fimpair,N2,log2n);
+		for(n=0;n<N2;n++){
+			result[2*n]=Fpair[n];
+			result[2*n+1]=Fimpair[n];
+		}
+	}
+	else{
+		result[0]=data[0];
+		return;
+	}
+
+}
+
+/* Rôle : Calcul de la DFT du signal */
+void DFT(complex *data, complex *result, unsigned int buffer){
+	for(int k=0; k<BUFFER_LEN;++k){
+		for(int n=0; n<BUFFER_LEN;++n){
+			result[k]=result[k]+data[n]*cexp(-2*I*3.14150*k*n/buffer);
+		}
+	}
+}
+
+/*************** fonction utiles ***************/
