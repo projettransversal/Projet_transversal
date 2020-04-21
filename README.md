@@ -15,5 +15,9 @@ Ainsi nous avons mit a votre disposition des fonctions tels que :
 <br>
 Et enfin le fichie fftread.c qui regroupe l'ensemble des éléments.
 </br>
-
-![Image description](https://github.com/projettransversal/Projet_transversal/blob/master/affichage%20spectre%20terminal%20v2)
+<br>
+</br>
+Voici une photo du rendue final sur linux : 
+<br>
+</br>
+![Image description](https://github.com/projettransversal/Projet_transversal/blob/master/affichage_fft)
